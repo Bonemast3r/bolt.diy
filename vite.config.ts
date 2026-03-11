@@ -21,7 +21,7 @@ export default defineConfig((config) => {
     },
     server: {
       // Autorise explicitement l'URL Railway
-      allowedHosts: ['boltdiy-production-5862.up.railway.app'],
+      allowedHosts: 'all',
     },
     plugins: [
       nodePolyfills({
