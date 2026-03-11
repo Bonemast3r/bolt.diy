@@ -19,14 +19,15 @@ export default defineConfig((config) => {
     build: {
       target: 'esnext',
     },
+    server: {
+      allowedHosts: [
+        'boltdiy-production-5862.up.railway.app'
+      ]
+    },
     plugins: [
       nodePolyfills({
         include: ['buffer', 'process', 'util', 'stream'],
-        globals: {
-          Buffer: true,
-          process: true,
-          global: true,
-        },
+        globals: { Buffer: true, process: true, global: true },
         protocolImports: true,
         exclude: ['child_process', 'fs', 'path'],
       }),
@@ -34,24 +35,13 @@ export default defineConfig((config) => {
         name: 'buffer-polyfill',
         transform(code, id) {
           if (id.includes('env.mjs')) {
-            return {
-              code: `import { Buffer } from 'buffer';\n${code}`,
-              map: null,
-            };
+            return { code: `import { Buffer } from 'buffer';\n${code}`, map: null };
           }
-
           return null;
         },
       },
       config.mode !== 'test' && remixCloudflareDevProxy(),
-      remixVitePlugin({
-        future: {
-          v3_fetcherPersist: true,
-          v3_relativeSplatPath: true,
-          v3_throwAbortReason: true,
-          v3_lazyRouteDiscovery: true,
-        },
-      }),
+      remixVitePlugin({ future: { v3_fetcherPersist: true, v3_relativeSplatPath: true, v3_throwAbortReason: true, v3_lazyRouteDiscovery: true } }),
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),
@@ -67,9 +57,7 @@ export default defineConfig((config) => {
     ],
     css: {
       preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler',
-        },
+        scss: { api: 'modern-compiler' },
       },
     },
     test: {
@@ -79,12 +67,11 @@ export default defineConfig((config) => {
         '**/cypress/**',
         '**/.{idea,git,cache,output,temp}/**',
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
-        '**/tests/preview/**', // Exclude preview tests that require Playwright
+        '**/tests/preview/**',
       ],
     },
   };
 });
-
 function chrome129IssuePlugin() {
   return {
     name: 'chrome129IssuePlugin',
